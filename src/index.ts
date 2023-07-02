@@ -1,7 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
 import process from 'node:process';
-import registerHandlers from './ipc';
+import { registerModules } from './ipc';
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -10,10 +10,9 @@ const createWindow = () => {
     webPreferences: {
       devTools: true,
       preload: path.join(__dirname, 'preload/index.js'),
+      sandbox: false,
     },
   });
-
-  registerHandlers();
 
   if (process.env.NODE_ENV === 'development') {
     win.webContents.openDevTools();
@@ -21,15 +20,18 @@ const createWindow = () => {
   } else win.loadFile('dist/index.html');
 };
 
-app.whenReady().then(() => {
-  createWindow();
+app
+  .whenReady()
+  .then(() => registerModules())
+  .then(() => {
+    createWindow();
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
+    app.on('activate', () => {
+      if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow();
+      }
+    });
   });
-});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

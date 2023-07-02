@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises';
-import { Handler, Module } from '../@utils/decorator';
+import { Handler, Module } from '../utils/decorators';
 
 @Module('io')
 export default class IO {

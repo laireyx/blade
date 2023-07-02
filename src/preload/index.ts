@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import { exposeModules } from '../ipc';
 
 contextBridge.exposeInMainWorld('versions', {
   node: () => process.versions.node,
@@ -7,7 +8,5 @@ contextBridge.exposeInMainWorld('versions', {
   // we can also expose variables, not just functions
 });
 
-contextBridge.exposeInMainWorld('io', {
-  read: (filename: string, position: number, length: number) =>
-    ipcRenderer.invoke('io:read', filename, position, length),
-});
+// Cannot use top-level await due to tsc reason
+exposeModules(contextBridge, ipcRenderer);
