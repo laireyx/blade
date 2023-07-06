@@ -1,7 +1,7 @@
 import { propModuleName } from './symbols';
 
-export abstract class DecoratedModule {
-  static [propModuleName]: string;
+export interface DecoratedModule {
+  [propModuleName]: string;
 }
 
 export type HandlerList = Map<string, (...args: any[]) => Promise<any>>;

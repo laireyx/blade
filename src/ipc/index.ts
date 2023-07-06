@@ -10,7 +10,7 @@ export async function registerModules() {
       (imported) => imported.default.default,
     );
 
-    registerModule(Module);
+    registerModule(new Module());
   }
 }
 
@@ -26,6 +26,6 @@ export function exposeModules(
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Module = require('./' + filename).default;
 
-    exposeModule(Module, contextBridge, ipcRenderer);
+    exposeModule(new Module(), contextBridge, ipcRenderer);
   }
 }

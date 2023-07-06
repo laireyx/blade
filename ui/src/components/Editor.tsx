@@ -32,18 +32,19 @@ const TextP = styled.p`
 
 export default function Editor() {
   const editor = useEditor();
-  const content = new TextDecoder().decode(editor.data).split('\n');
+  const content = editor.str.split('\n');
 
   useEffect(() => {
     editor.read();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <EditorDiv>
       {content.map((line, no) => (
         <>
-          <LineSpan>{no + editor.line}</LineSpan>
-          <TextP>{line}</TextP>
+          <LineSpan key={no * 2 + 1}>{no + editor.line}</LineSpan>
+          <TextP key={no * 2 + 2}>{line}</TextP>
         </>
       ))}
     </EditorDiv>

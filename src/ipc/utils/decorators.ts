@@ -5,7 +5,7 @@ import { DecoratedModule, HandlerList } from './types';
 export function Module(moduleName: string) {
   return function <T extends { new (...args: any[]): object }>(constructor: T) {
     return class extends constructor implements DecoratedModule {
-      static [propModuleName] = moduleName;
+      [propModuleName] = moduleName;
     };
   };
 }

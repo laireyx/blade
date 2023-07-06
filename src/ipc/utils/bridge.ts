@@ -2,7 +2,7 @@ import { ipcMain, ContextBridge, IpcRenderer } from 'electron';
 import { DecoratedModule, HandlerList } from './types';
 import { propIpcHandlers, propModuleName } from './symbols';
 
-export function registerModule(module: typeof DecoratedModule) {
+export function registerModule(module: DecoratedModule) {
   const ipcHandlers: HandlerList = Reflect.getMetadata(propIpcHandlers, module);
 
   for (const [messageName, handler] of ipcHandlers.entries()) {
@@ -14,7 +14,7 @@ export function registerModule(module: typeof DecoratedModule) {
 }
 
 export function exposeModule(
-  module: typeof DecoratedModule,
+  module: DecoratedModule,
   contextBridge: ContextBridge,
   ipcRenderer: IpcRenderer,
 ) {

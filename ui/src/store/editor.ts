@@ -4,31 +4,43 @@ interface EditorInterface {
   filename: string;
   line: number;
   offset: number;
-  data: Uint8Array;
+  BLOCK_SIZE: number;
+  encoding: string;
 
+  str: string;
+
+  open: (filename: string) => Promise<void>;
   read: () => Promise<void>;
-}
-
-declare global {
-  const io: {
-    read: (
-      filename: string,
-      position: number,
-      length: number,
-    ) => Promise<Buffer>;
-  };
 }
 
 const useEditor = create<EditorInterface>((set, get) => ({
   filename: 'package.json',
-  line: 0,
+  line: 1,
   offset: 0,
-  data: new Uint8Array(),
+  BLOCK_SIZE: 4096,
+  encoding: 'utf-8',
+
+  str: '',
+
+  open: async (filename: string) => {
+    const { BLOCK_SIZE, encoding } = get();
+    const data = await io.read(filename, 0, BLOCK_SIZE);
+    const str = new TextDecoder(encoding).decode(data);
+
+    set({
+      filename,
+      line: 1,
+      offset: 0,
+      str,
+    });
+  },
 
   read: async () => {
-    const { filename, offset } = get();
-    const data = await io.read(filename, offset, 4096);
-    set({ data });
+    const { filename, offset, BLOCK_SIZE, encoding } = get();
+    const data = await io.read(filename, offset, BLOCK_SIZE);
+    const str = new TextDecoder(encoding).decode(data);
+
+    set({ str });
   },
 }));
 
